@@ -1,70 +1,58 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import {
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  useColorScheme,
+  View,
+} from "react-native";
+import { Colors } from "@/constants/Colors";
+import { Link } from "expo-router";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 export default function HomeScreen() {
+  const colorScheme = useColorScheme();
+  const primaryBackground = Colors[colorScheme ?? "light"].primaryBackground;
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView
+      style={{
+        backgroundColor: primaryBackground,
+      }}
+      className="flex-1 "
+    >
+      <View className="px-4 pt-4">
+        {/* Header Section */}
+        <View className="flex-row justify-between mx-2">
+          <Link href={"/class"}>
+            <View className="flex-row items-center mb-6 bg-white border border-gray-500 px-2 py-4 rounded-xl">
+              <View className="p-3 bg-gray-200 rounded-full">
+                <Ionicons name="location-outline" size={24} color="black" />
+              </View>
+              <View className="ml-3">
+                <Text className="text-2xl font-bold text-black">Classes</Text>
+                <Text className="text-sm text-gray-500">Manage classes</Text>
+              </View>
+            </View>
+          </Link>
+        </View>
+        {/* Today's Classes Section */}
+        <Text className="text-xl font-bold text-black mb-4">
+          Today's Classes
+        </Text>
+        <ScrollView className="flex-1">
+          <View className="p-4 bg-gray-100 rounded-lg mb-4">
+            <Text className="text-lg font-bold text-black">Crossfit</Text>
+            <Text className="text-sm text-gray-700">09:00 AM</Text>
+            <Text className="text-sm text-gray-700">John Doe</Text>
+          </View>
+          {/* Repeat similar View components for each class */}
+        </ScrollView>
+
+        {/* Bottom Navigation */}
+      </View>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
