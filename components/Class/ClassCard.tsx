@@ -1,12 +1,31 @@
-import { Class } from "@/types";
+import React from "react";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+} from "react-native";
 import { format } from "date-fns";
 import { router } from "expo-router";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { ThemedText } from "../ThemedText";
 import { Ionicons } from "@expo/vector-icons";
+import { ThemedText } from "../ThemedText";
+import { Class } from "@/types";
+import useEnrollMutation from "@/hooks/useEnrollMutation"; // Assuming this hook is in the hooks folder
 
 const ClassCard = ({ classItem }: { classItem: Class }) => {
-  const isAthleteEnrolled = true;
+  const athleteId = "9b288f28-1970-4706-b375-c673d190b363"; // Hardcoded athlete ID
+  // Check if athlete is already enrolled in the class
+  const { enrollMutation } = useEnrollMutation(classItem.id);
+
+  // TODO: Update as needed to check athlete's enrollment status
+  const isAthleteEnrolled = classItem.enrollments?.some(
+    (enrollment) => enrollment.athlete.id === athleteId
+  );
+
+  console.log("classItem", classItem.enrollments);
+
   return (
     <TouchableOpacity
       onPress={() => router.push(`/class/${classItem.id}`)}
@@ -14,7 +33,7 @@ const ClassCard = ({ classItem }: { classItem: Class }) => {
     >
       {/* Avatar and Details */}
       <View className="flex-row items-center flex-1">
-        <TouchableOpacity onPress={() => alert("modal profile pic")}>
+        <TouchableOpacity onPress={() => Alert.alert("Profile Picture")}>
           <Image
             source={{
               uri:
@@ -51,7 +70,7 @@ const ClassCard = ({ classItem }: { classItem: Class }) => {
             <View
               className="flex-row items-center p-1 gap-x-2"
               style={{
-                backgroundColor: "#d2d2d2",
+                backgroundColor: styles.enrolledButton.backgroundColor,
                 paddingHorizontal: 4,
                 borderRadius: 10,
               }}
@@ -66,18 +85,27 @@ const ClassCard = ({ classItem }: { classItem: Class }) => {
       </View>
 
       {/* Enroll Button */}
-      {!isAthleteEnrolled ? (
-        <TouchableOpacity
-          style={styles.enrolledButton}
-          onPress={() => alert("Book class")}
-          disabled
-        >
+      {isAthleteEnrolled ? (
+        <TouchableOpacity style={styles.enrolledButton} disabled>
           <Text style={styles.buttonTextEnrolled}>Enrolled</Text>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
           style={styles.enrollButton}
-          onPress={() => alert("Enroll in class")}
+          onPress={() =>
+            enrollMutation.mutate(athleteId, {
+              onSuccess: () =>
+                Alert.alert(
+                  "Enrollment Success",
+                  "You have been enrolled successfully"
+                ),
+              onError: (error) =>
+                Alert.alert(
+                  "Enrollment Error",
+                  error.message || "Error occurred during enrollment"
+                ),
+            })
+          }
         >
           <Text style={styles.buttonText}>Enroll</Text>
         </TouchableOpacity>
@@ -85,6 +113,7 @@ const ClassCard = ({ classItem }: { classItem: Class }) => {
     </TouchableOpacity>
   );
 };
+
 const styles = StyleSheet.create({
   avatar: {
     width: 50,
@@ -93,23 +122,28 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   enrolledButton: {
-    backgroundColor: "#b2b2b2", // Light green background
+    backgroundColor: "#d2d2d2",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
   },
   enrollButton: {
-    backgroundColor: "#D1FAE5", // Light green background
+    backgroundColor: "#D1FAE5",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   buttonText: {
-    color: "#065F46", // Dark green text
+    color: "#065F46",
     fontWeight: "bold",
   },
   buttonTextEnrolled: {
-    color: "#585858", // Dark green text
+    color: "#585858",
     fontWeight: "bold",
   },
 });
