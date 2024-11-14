@@ -48,9 +48,6 @@ const ClassDetail = () => {
   if (isLoading) return <ActivityIndicator size="large" color="#0000ff" />;
   if (error) return <Text>Error: {error.response?.data.error}</Text>;
 
-  console.log("ID.....", id);
-
-  console.log(classDetail);
 
   const iconBackground = Colors[colorScheme ?? "light"].text;
 
@@ -74,12 +71,12 @@ const ClassDetail = () => {
           non, obcaecati vero placeat sed, temporibus vel possimus facere quos
           soluta ex atque!
         </ThemedText>
-        <View className="flex flex-col gap-y-1 my-4">
-          <View className=" flex-row items-center  gap-x-2">
+        <View className="flex flex-col my-4 gap-y-1">
+          <View className="flex-row items-center  gap-x-2">
             <Ionicons name="people-outline" size={28} color={iconBackground} />
             <ThemedText type="default">{`Available ${classDetail?.activeEnrollments} of ${classDetail?.capacity} spots`}</ThemedText>
           </View>
-          <View className=" flex-row items-center  gap-x-2">
+          <View className="flex-row items-center  gap-x-2">
             <Ionicons
               name="location-outline"
               size={28}
@@ -87,7 +84,7 @@ const ClassDetail = () => {
             />
             <ThemedText type="default">{`{Location goes here}`}</ThemedText>
           </View>
-          <View className=" flex-row items-center  gap-x-2">
+          <View className="flex-row items-center  gap-x-2">
             <Ionicons
               name="calendar-outline"
               size={28}
